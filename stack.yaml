@@ -4,6 +4,7 @@ resolver: nightly-2015-10-27
 packages:
 - .
 - haskell-ide-example-plugin2
+- haskell-ide-psc-ide-plugin
 - haskell-ide-plugin-api
 extra-deps:
  - logging-3.0.2

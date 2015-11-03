@@ -11,32 +11,32 @@ import           Data.Char
 import           Data.Foldable
 import           Data.IORef
 import           Data.List
+import qualified Data.Map                               as Map
+import qualified Data.Text                              as T
+import           Data.Time
 import           Data.Traversable
-import qualified Data.Text as T
-import           Data.Version (showVersion)
-import           Development.GitRev (gitCommitCount)
-import           Distribution.System (buildArch)
-import           Distribution.Text (display)
+import           Data.Version                           (showVersion)
+import           Development.GitRev                     (gitCommitCount)
+import           Distribution.System                    (buildArch)
+import           Distribution.Text                      (display)
 import           Haskell.Ide.Engine.Monad
 import           Haskell.Ide.Engine.Options
 import           Haskell.Ide.Engine.Plugin
 import           Haskell.Ide.Engine.PluginDescriptor
 import           Haskell.Ide.Engine.Transport.JsonStdio
 import           Haskell.Ide.Engine.Types
-import qualified Language.Haskell.GhcMod.LightGhc as GM
-import qualified Language.Haskell.GhcMod.Monad as GM
-import qualified Language.Haskell.GhcMod.Types as GM
-import           Module (mkModuleName)
+import qualified Language.Haskell.GhcMod.LightGhc       as GM
+import qualified Language.Haskell.GhcMod.Monad          as GM
+import qualified Language.Haskell.GhcMod.Types          as GM
+import           Module                                 (mkModuleName)
 import           Options.Applicative.Simple
-import qualified Data.Map as Map
-import qualified Paths_haskell_ide_engine as Meta
-import           Data.Time
+import qualified Paths_haskell_ide_engine               as Meta
 import           System.IO
 
 -- ---------------------------------------------------------------------
 -- plugins
 
-import Haskell.Ide.ExamplePlugin2
+import           Haskell.Ide.ExamplePlugin2
 
 -- ---------------------------------------------------------------------
 
@@ -90,6 +90,8 @@ plugins = Map.fromList
     -- Note: statically including known plugins. In future this map could be set
     -- up via a config file of some kind.
     ("eg2", PluginReg example2Descriptor example2Dispatcher)
+    -- Psc-ide plugin
+  , ("psc-ide", PluginReq pscIdeDescriptor pscIdeDispatcher)
     -- The base plugin, able to answer questions about the IDE Engine environment.
   , ("base", PluginReg baseDescriptor baseDispatcher)
   ]
