@@ -5,30 +5,30 @@ module Main where
 import           Control.Concurrent
 import           Control.Exception
 import           Control.Monad
-import           Control.Monad.IO.Class
+-- import           Control.Monad.IO.Class
 import           Data.Aeson
 import           Data.Char
-import           Data.Foldable
-import           Data.IORef
+-- import           Data.Foldable
+-- import           Data.IORef
 import           Data.List
 import qualified Data.Map                               as Map
 import qualified Data.Text                              as T
 import           Data.Time
-import           Data.Traversable
+-- import           Data.Traversable
 import           Data.Version                           (showVersion)
 import           Development.GitRev                     (gitCommitCount)
 import           Distribution.System                    (buildArch)
 import           Distribution.Text                      (display)
-import           Haskell.Ide.Engine.Monad
+-- import           Haskell.Ide.Engine.Monad
 import           Haskell.Ide.Engine.Options
-import           Haskell.Ide.Engine.Plugin
+-- import           Haskell.Ide.Engine.Plugin
 import           Haskell.Ide.Engine.PluginDescriptor
 import           Haskell.Ide.Engine.Transport.JsonStdio
 import           Haskell.Ide.Engine.Types
-import qualified Language.Haskell.GhcMod.LightGhc       as GM
-import qualified Language.Haskell.GhcMod.Monad          as GM
-import qualified Language.Haskell.GhcMod.Types          as GM
-import           Module                                 (mkModuleName)
+-- import qualified Language.Haskell.GhcMod.LightGhc       as GM
+-- import qualified Language.Haskell.GhcMod.Monad          as GM
+-- import qualified Language.Haskell.GhcMod.Types          as GM
+-- import           Module                                 (mkModuleName)
 import           Options.Applicative.Simple
 import qualified Paths_haskell_ide_engine               as Meta
 import           System.IO
@@ -37,6 +37,7 @@ import           System.IO
 -- plugins
 
 import           Haskell.Ide.ExamplePlugin2
+import           Haskell.Ide.PscIdePlugin
 
 -- ---------------------------------------------------------------------
 
@@ -91,7 +92,7 @@ plugins = Map.fromList
     -- up via a config file of some kind.
     ("eg2", PluginReg example2Descriptor example2Dispatcher)
     -- Psc-ide plugin
-  , ("psc-ide", PluginReq pscIdeDescriptor pscIdeDispatcher)
+  , ("psc-ide", PluginReg pscIdeDescriptor pscIdeDispatcher)
     -- The base plugin, able to answer questions about the IDE Engine environment.
   , ("base", PluginReg baseDescriptor baseDispatcher)
   ]
@@ -155,6 +156,8 @@ stdioListener cin = do
           "hello"   -> Right $ ("eg2", IdeRequest "sayHello" NoSession NoContext Map.empty)
           "version" -> Right $ ("base",IdeRequest "version"  NoSession NoContext Map.empty)
           "plugins" -> Right $ ("base",IdeRequest "plugins"  NoSession NoContext Map.empty)
+          "request" -> Right ("psc-ide", IdeRequest "request" NoSession NoContext
+                                         (Map.fromList []))
           cmd     -> Left $ "unrecognised command:" ++ cmd
       case req of
         Left err -> putStrLn err
