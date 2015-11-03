@@ -157,7 +157,8 @@ stdioListener cin = do
           "version" -> Right $ ("base",IdeRequest "version"  NoSession NoContext Map.empty)
           "plugins" -> Right $ ("base",IdeRequest "plugins"  NoSession NoContext Map.empty)
           "request" -> Right ("psc-ide", IdeRequest "request" NoSession NoContext
-                                         (Map.fromList []))
+                                         (Map.fromList [("port", "4242"),
+                                                        ("command", "{\"command\": \"cwd\"}")]))
           cmd     -> Left $ "unrecognised command:" ++ cmd
       case req of
         Left err -> putStrLn err
